@@ -15,11 +15,11 @@ One last thing I would like to point out would be that I do not yet have a part 
 
 ## Data Collection
 
-I got all my data from scraping the Basketball Reference website https://www.basketball-reference.com/leagues/NBA_2022_per_game.html
+I got all my statistic data from scraping the Basketball Reference website https://www.basketball-reference.com/leagues/NBA_2022_per_game.html
 
 Due to the nature of websites changing their format and such, this code may not work. Basketball Reference has been pretty uniform through the years on their layout, so I do not see any changes coming soon. This is just as a warning though. The last edit was February 7, 2022. As of this day, the code still scrapes correctly. 
 
-This is how I scraped some of the years with a loop. This is the broad overview scraping and does not include the added parts found later in the code. For a full version (and much lengthier, due to fact that I am unsure how to do a loop scrape with All-Star selection for previous years) check the attached Python file.
+This is how I scraped some of the years with a loop. This is the broad overview scraping and does not include the added parts found later in the code. For a full version (and much lengthier, due to fact that I am unsure how to do a loop scrape with All-Star selection for previous years) check the attached Python file. For All-Star selection in previous years, I simply googled and added the information manually.
 
 ```python
 # Create an empty list of years
@@ -42,3 +42,41 @@ for i in year:
 # Combine all dataframes within the list
 finaldf = pd.concat(dfs)
 ```
+## Modeling
+
+I started with creating a list of numerical variables, then filled missing values with a zero. From there, I split the data into training and testing sets. I made it an .80 training size, obviously with the result variable being All-Star.
+
+```python
+# Split the data into training and testing
+
+X_train, X_test, y_train, y_test = train_test_split(results[xcols], 
+                                                    results['All-Star'], 
+                                                    train_size = 0.8, 
+                                                    random_state = 1)
+print('training data:', X_train.shape)
+print('test data:', X_test.shape)
+```
+
+I fit a logistic regression model with 3000 iterations to assure the validity of this model. I came out with about a 98% accuracy score. I listed the top and worst coefficients to help identify the most influential in prediciting All-Stars. I added the top five and the bottom five coefficients to a new list. I will use these in the next test/train set.
+
+```python
+log_reg = LogisticRegression(solver = 'lbfgs', max_iter = 3000)
+
+# Fit the model to the training data
+clf = log_reg.fit(X_train, y_train)
+
+print('training accuracy: {}'.format(clf.score(X_train, y_train).round(3)))
+print('test accuracy: {}'.format(clf.score(X_test, y_test).round(3)))
+```
+
+Next, was somee regularization and cross validating. The next little bit of code includes recall, precision, a confusion matrix, etc. This helps identify a little more accuracy and such. 
+
+```python
+# Confusion matrix
+
+cm = confusion_matrix(y_test, y_pred_test)
+sample = np.array([['TN', 'FP'], ['FN', 'TP']])
+print('CM key:\n', sample, '\n')
+print('CM for test:\n', cm)
+```
+
