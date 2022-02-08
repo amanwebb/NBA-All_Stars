@@ -80,3 +80,35 @@ print('CM key:\n', sample, '\n')
 print('CM for test:\n', cm)
 ```
 
+## Predicting
+
+Now it is finally time to do some predicting! We will start by setting up the dataframe. This will include only taking the important stats (top and bottom five variables). This will help us come out with more accuracy in the end, as we found out with the modeling code. 
+
+```python
+# only take the important stats we found earlier
+
+player_stats_22_short = player_stats_22[['STL', 'BLK', 'DRB', 'PTS', '3P', 
+                                         '2P', '3PA', 'TOV', 'PF', 'ORB']]
+```
+
+![image](https://user-images.githubusercontent.com/81338261/153013027-45fab31c-d9f9-46ac-97fe-0a8b4c0b4cf6.png)
+
+We then use the all-powerful predict function built in Python libraries. This is done with a simple one line of code.
+
+```python
+pred = clf.predict(player_stats_22[xcols3])
+```
+
+This outputs a long list of zeros and ones. The ones being a yes or an All-Star. We put this in a list and add it to the dataframe in the final column. We can now filter this resulting dataframe and see only the predicted All-Stars.
+
+![image](https://user-images.githubusercontent.com/81338261/153013719-96d260f3-1e49-48ae-bdda-7bdd65fb0270.png)
+
+Now, if we undo the filter, we can see all the players again. From this dataframe, which still shows the All-Star predictions, we can compare other players' stats to the average All-Star predicted. A lot of articles in the news recently have been saying that Jarrett Allen was snubbed and should have been selected as an All-Star. I started with comparing him. I created a specific player then subtracted his stats from the mean of the All-Star stats. This means we want to see postive results in our subtraction equations. If we see positive numbers, excluding the turnover and personal fouls (which you would want less of, so lower numbers)  
+
+```python
+specific_player = player_stats_22.loc[player_stats_22['Player'] == 'Jarrett Allen']
+specific_player = specific_player.drop(['Player', 'Pos', 'Tm'], axis = 1)
+specific_player
+```
+
+
