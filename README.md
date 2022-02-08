@@ -125,7 +125,7 @@ From here, I added a Rank column (percentage) for these columns. This is what we
 
 ![image](https://user-images.githubusercontent.com/81338261/153035757-326a8f04-8de6-4959-8475-19ab2cd5da6b.png)
 
-I then wrote some code for the graph setup. This includes assigning team colors to their respective hex codes, splitting the graph into the appropriate sections (six), and creating a function to call the player and team. 
+I then wrote the function for the graph setup. This includes assigning team colors to their respective hex codes, splitting the graph into the appropriate sections (six), and creating a function to call the player and team. 
 
 ```python
 # Calculate angles for radar chart
@@ -133,7 +133,6 @@ offset = np.pi / 6
 angles = np.linspace(0, 2 * np.pi, len(categories) + 1) + offset
 
 # Generate chart
-
 def create_radar_chart(ax, angles, player_data, color = 'blue'):
     
     ax.plot(angles, np.append(player_data[-(len(angles) - 1):], 
@@ -178,8 +177,44 @@ def get_data(data, player):
   return np.asarray(select_data.loc[select_data['Player'] == player])[0]
 ```
 
+We will now use those functions for the players we want to compare. I have six players compared at a time. If you want to change that, you just have to remove the excess players (ax5, ax6, etc.) depending on how many you want to compare. You should also adjust the first number in the subplot area, because that is the actual layout of the graphs.
 
+```python
+# Create figure
+fig = plt.figure(figsize = (8, 8), facecolor = 'white')
 
+# Add subplots
+ax1 = fig.add_subplot(231, projection = 'polar', facecolor = '#ededed')
+ax2 = fig.add_subplot(232, projection = 'polar', facecolor = '#ededed')
+ax3 = fig.add_subplot(233, projection = 'polar', facecolor = '#ededed')
+ax4 = fig.add_subplot(234, projection = 'polar', facecolor = '#ededed')
+ax5 = fig.add_subplot(235, projection = 'polar', facecolor = '#ededed')
+ax6 = fig.add_subplot(236, projection = 'polar', facecolor = '#ededed')
 
+# Adjust space between subplots
+plt.subplots_adjust(hspace = 0.2, wspace = 1.0)
+
+# Get data with player
+candidate_1_data = get_data(select_data, 'Kevin Durant')
+candidate_2_data = get_data(select_data, 'Trae Young')
+candidate_3_data = get_data(select_data, 'LeBron James')
+candidate_4_data = get_data(select_data, 'Luka Dončić')
+candidate_5_data = get_data(select_data, 'LaMelo Ball')
+candidate_6_data = get_data(select_data, 'Jarrett Allen')
+
+# Plot data
+ax1 = create_radar_chart(ax1, angles, candidate_1_data, team_colors['BRK'])
+ax2 = create_radar_chart(ax2, angles, candidate_2_data, team_colors['ATL'])
+ax3 = create_radar_chart(ax3, angles, candidate_3_data, team_colors['LAL'])
+ax4 = create_radar_chart(ax4, angles, candidate_4_data, team_colors['DAL'])
+ax5 = create_radar_chart(ax5, angles, candidate_5_data, team_colors['CHA'])
+ax6 = create_radar_chart(ax6, angles, candidate_6_data, team_colors['CLE'])
+
+plt.show()
+```
+
+![image](https://user-images.githubusercontent.com/81338261/153037689-3d8e5cfb-3192-4230-9aba-33fee96be111.png)
+
+This is what the Radar Charts look like at the end. The further out the points are,, the higher teh ranking in that particular category. This is true, except for the Personal Fouls section. I inversed that section, due to Personal Fouls being bad. Therefor, it aligns withthe other categories - the closer the point is to the center, the worse it is. The closer to the center it is, the more amount of fouls they average.  
 
 
