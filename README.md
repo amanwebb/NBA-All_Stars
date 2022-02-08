@@ -106,9 +106,80 @@ This outputs a long list of zeros and ones. The ones being a yes or an All-Star.
 Now, if we undo the filter, we can see all the players again. From this dataframe, which still shows the All-Star predictions, we can compare other players' stats to the average All-Star predicted. A lot of articles in the news recently have been saying that Jarrett Allen was snubbed and should have been selected as an All-Star. I started with comparing him. I created a specific player then subtracted his stats from the mean of the All-Star stats. This means we want to see postive results in our subtraction equations. If we see positive numbers, excluding the turnover and personal fouls (which you would want less of, so lower numbers)  
 
 ```python
+# Get the specific player you want
 specific_player = player_stats_22.loc[player_stats_22['Player'] == 'Jarrett Allen']
 specific_player = specific_player.drop(['Player', 'Pos', 'Tm'], axis = 1)
 specific_player
 ```
+This is the comparison of Jarrett Allen and the mean All-Star
+
+![image](https://user-images.githubusercontent.com/81338261/153034368-f81b3628-3f05-47fe-a0d0-12c0af105de3.png)
+
+Now everyone can can look at the numbers in the dataframe, but that is no fun. So I decided to make some Radar Charts to visualize the comparisons. This will help make the comparisons easier, faster, and more fun. 
+
+I only included six variables within the charts, mainly just for simplicity. When you have too many, it gets too clustered and not easy to read. For me, I decided to go with Points, Total Rebounds, Steals, Blocks, Assists, and Personal Fouls. I felt like these were a good indicator for an all-around star player. The new dataframe will obviously be a lot smaller.
+
+![image](https://user-images.githubusercontent.com/81338261/153035121-e701dd00-227b-4302-9d1c-c36468bc630c.png)
+
+From here, I added a Rank column (percentage) for these columns. This is what we will use for our charts. This ranking will allow us to see the comparisons easier. Rather than seeing a player with an average of 30 points and another with 21, we can see the one player with a 90% and a 75%. Disclosure - these numbers in this paragraph were simply and clearly made up. A 30 point average is not necessarily a 90% ranking. 
+
+![image](https://user-images.githubusercontent.com/81338261/153035757-326a8f04-8de6-4959-8475-19ab2cd5da6b.png)
+
+I then wrote some code for the graph setup. This includes assigning team colors to their respective hex codes, splitting the graph into the appropriate sections (six), and creating a function to call the player and team. 
+
+```python
+# Calculate angles for radar chart
+offset = np.pi / 6
+angles = np.linspace(0, 2 * np.pi, len(categories) + 1) + offset
+
+# Generate chart
+
+def create_radar_chart(ax, angles, player_data, color = 'blue'):
+    
+    ax.plot(angles, np.append(player_data[-(len(angles) - 1):], 
+            player_data[-(len(angles) - 1)]), 
+            color = color, 
+            linewidth = 2)
+    ax.fill(angles, 
+            np.append(player_data[-(len(angles) - 1):], 
+            player_data[-(len(angles) - 1)]), 
+            color = color, 
+            alpha = 0.2)
+    
+    # Set category labels
+    ax.set_xticks(angles[:-1])
+    ax.set_xticklabels(categories)
+
+
+    # Remove radial labels
+    ax.set_yticklabels([])
+
+    # Add player name
+    ax.text(np.pi / 2, 2.2, 
+            player_data[0], 
+            ha = 'center', 
+            va = 'center', 
+            size = 18, 
+            color = color)
+    
+    # Use white grid
+    ax.grid(color = 'white', 
+            linewidth = 1.5)
+
+    # Set axis limits
+    ax.set(xlim = (0, 
+                   2 * np.pi), 
+           ylim = (0, 1))
+
+    return ax
+    
+# Function to select the player and team    
+def get_data(data, player):
+  return np.asarray(select_data.loc[select_data['Player'] == player])[0]
+```
+
+
+
+
 
 
