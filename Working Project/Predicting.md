@@ -133,4 +133,4 @@ plt.show()
 
 ![image](https://user-images.githubusercontent.com/81338261/153037689-3d8e5cfb-3192-4230-9aba-33fee96be111.png)
 
-This is what the Radar Charts look like at the end. The further out the points are,, the higher teh ranking in that particular category. This is true, except for the Personal Fouls section. I inversed that section, due to Personal Fouls being bad. Therefor, it aligns withthe other categories - the closer the point is to the center, the worse it is. The closer to the center it is, the more amount of fouls they average.  
+This is what the Radar Charts look like at the end. The further out the points are, the higher the ranking in that particular category. This is true, except for the Personal Fouls section. I inversed that section, due to Personal Fouls being bad. Therefore, it aligns with the other categories - the closer the point is to the center, the worse it is. The closer to the center it is, the more amount of fouls they average.  
